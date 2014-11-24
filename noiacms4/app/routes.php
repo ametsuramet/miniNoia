@@ -29,6 +29,7 @@ Route::group(array('before' => 'auth'), function()
 	Route::post('addUser',array('uses'=>'AdminController@tambahUserProses'));
 	Route::get('comment',array('uses'=>'AdminController@comment'));
 	Route::get('setting',array('uses'=>'AdminController@setting'));
+	Route::post('saveSetting',array('uses'=>'AdminController@setting'));
 	Route::get('logout', array( function()
 	{
 		Auth::logout();

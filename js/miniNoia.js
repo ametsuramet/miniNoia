@@ -13,13 +13,35 @@ $(function() {
 	var base = $('#base').val();
 	prettyPrint();
 	$('.show_search').toggleClick(function(){
-		$('.search_wrapper').fadeIn();
+		$('.search_wrapper').fadeIn(); 
 	},function(){
 		$('.search_wrapper').fadeOut();
 	});
 	$('.search_wrapper').keypress(function(e) {
 		if(e.which == 13) {
 			location.href = base + '?search=' + $(this).val();
+		}
+	});
+	del_menu();
+	
+	var add_menu = '<div class="row form-setting"><div class="col-md-2"></div>'
+		add_menu +='<div class="col-md-4"><input class="form-control" name="menu[name][]" type="text" value=""></div>'
+		add_menu +='<div class="col-md-4"><input class="form-control" name="menu[link][]" type="text" value=""></div>'
+		add_menu +='<div class="col-md-2"><i class="fa fa-times  del_menu" style="cursor:pointer;font-size:1.2em;color:#f00"></i>	</div></div>'
+	$('.add_menu').click(function(){
+		$('.setting_menu').append(add_menu);
+		del_menu(); 
+	})
+	if($('[name="comment"]').is(':checked')){
+		$('[name="comment"]').val('true');
+	}else{
+		$('[name="comment"]').val('false');
+	}
+	$('[name="comment"]').change(function(){
+		if($('[name="comment"]').is(':checked')){
+			$('[name="comment"]').val('true');
+		}else{
+			$('[name="comment"]').val('false');
 		}
 	});
 	$('.post img').animate({ 
@@ -100,7 +122,13 @@ $(function() {
         	if(!con) return false
         })
 });
-
+function del_menu(){
+		$('.del_menu').each(function(){
+			$(this).click(function(){		
+				$(this).parent().parent().remove()
+			});
+		});
+	}
 function predefined() {
 
 }

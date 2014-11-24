@@ -39,7 +39,7 @@ class AdminController extends \BaseController {
 				'edit'=>$edit,				
 				'post_edit'=>$post_edit,				
 				);	 
-		$config = Config::get('blog');
+		$config = Config::get('admin');
         Theme::init('default');  	
 		
 		$this->layout = View::make('sb_admin.master')->with('config',$config);
@@ -58,7 +58,7 @@ class AdminController extends \BaseController {
 				'type'=>'post',				
 				'title'=>'List Post ',				
 				);	
-		$config = Config::get('blog');
+		$config = Config::get('admin');
 		Theme::init('default');  
 		$this->layout = View::make('sb_admin.master')->with('config',$config);		
 		$this->layout->content = View::make('sb_admin.listPost')->with('data',$data)->with('config',$config);
@@ -72,7 +72,7 @@ class AdminController extends \BaseController {
 				'type'=>'page',				
 				'title'=>'List Page ',				
 				);	
-		$config = Config::get('blog');
+		$config = Config::get('admin');
         Theme::init('default');  
 		$this->layout = View::make('sb_admin.master')->with('config',$config);
 		$this->layout->content = View::make('sb_admin.listPost')->with('data',$data)->with('config',$config);
@@ -109,7 +109,7 @@ class AdminController extends \BaseController {
 				'user_edit'=>$user_edit,				
 				);	
 				
-		$config = Config::get('blog');
+		$config = Config::get('admin');
          Theme::init('default');  
 		$this->layout = View::make('sb_admin.master')->with('config',$config); 		
 		$this->layout->content = View::make('sb_admin.addUser')->with('data',$data)->with('config',$config);
@@ -123,7 +123,7 @@ class AdminController extends \BaseController {
 		
 		$user = Pengguna::all();
 	
-		$config = Config::get('blog');
+		$config = Config::get('admin');
        Theme::init('default');  
 		$this->layout = View::make('sb_admin.master')->with('config',$config);
 		$this->layout->content = View::make('sb_admin.listUser')->with('data',$user)->with('config',$config);
@@ -223,7 +223,7 @@ class AdminController extends \BaseController {
 				'post_edit'=>$post_edit,				
 				);	
 				
-		$config = Config::get('blog');
+		$config = Config::get('admin');
 	      Theme::init('default');  
 		$this->layout = View::make('sb_admin.master')->with('config',$config);
 		$this->layout->content = View::make('sb_admin.addPage')->with('data',$data)->with('config',$config);
@@ -263,7 +263,7 @@ public  function listCategory()
 				'type'=>'post',				
 				'title'=>'List Category',				
 				);	
-		$config = Config::get('blog');
+		$config = Config::get('admin');
         Theme::init('default');  
 		$this->layout = View::make('sb_admin.master')->with('config',$config);	
 		$this->layout->content = View::make('sb_admin.listCategory')->with('data',$data)->with('config',$config);
@@ -298,7 +298,7 @@ public  function addCategory()
 				'cat_edit'=>$cat_edit,				
 				);	
 				
-		$config = Config::get('blog');
+		$config = Config::get('admin');
 	    Theme::init('default');  
 		$this->layout = View::make('sb_admin.master')->with('config',$config);
 		$this->layout->content = View::make('sb_admin.addCategory')->with('data',$data)->with('config',$config);
@@ -337,7 +337,7 @@ public  function addCategoryProses()
 	
 	
 	public function comment(){
-		$config = Config::get('blog');
+		$config = Config::get('admin');
 		$comment = array();
 		if(isset($_GET['mode'])){
 			if($_GET['mode']=="edit"){
@@ -379,7 +379,7 @@ public  function editComment()
 	
 	public function login()
 	{
-		$config = Config::get('blog');
+		$config = Config::get('admin');
                 Theme::init('default');  
 				$this->layout = View::make('sb_admin.master')->with('config',$config);
 		$this->layout->content = View::make('sb_admin.login')->with('config',$config);
@@ -406,12 +406,55 @@ public  function editComment()
 	public function setting()
 	{
 		$data = array();
-		$config = Config::get('blog');
-        Theme::init('default');  	
-		
-		$this->layout = View::make('sb_admin.master')->with('config',$config);
-		$this->layout->content = View::make('sb_admin.setting')->with('data',$data)->with('config',$config);
+		$config = Config::get('admin');
+		$config_blog = Config::get('blog');
+        Theme::init('default');  
+			if(isset($_GET['action'])){
+			
+					$avatar =  Input::get('avatar2');
+					
+					if(Input::file('avatar')){ 
+					$file = Input::file('avatar');		
+					$destinationPath =public_path().'/img/'; //Path in your public folder...
+					$filename = $file->getClientOriginalName();
+					Input::file('avatar')->move($destinationPath, $filename);
+					$avatar =  URL::to('/img').'/'.$filename;
+					}
+					
+					$file = '<?php 
+							return array( 
+							"list_item"=>"'.Input::get('list_item').'", 
+							"author"=>"'.Input::get('author').'",
+							"blog_name"=>"'.Input::get('blog_name').'",
+							"description"=>"'.Input::get('description').'",
+							"tag_line"=>"'.Input::get('tag_line').'",
+							"keyword"=>"'.Input::get('keyword').'",
+							"alias"=>"'.Input::get('alias').'",
+							"avatar"=>"'.$avatar.'",
+							"comment"=>"'.Input::get('comment').'",
+							"twitter"=>"'.Input::get('twitter').'",
+							"facebook"=>"'.Input::get('facebook').'",
+							"google+"=>"'.Input::get('google+').'",
+							"menu"=>array(';
+					foreach($_POST['menu']['name'] as $index=>$name){
+								$link = $_POST['menu']['link'][$index];
+								$file .='"'.$name.'"=>"'.$link.'",';
+							}
+					$file .='),
+							);';					
+					$file_config = app_path().'/config/blog.php';	
+					$save = File::put($file_config, $file);	
+					//echo $avatar ;  
+						if($save) return Redirect::to('setting')->with('flash_notice', 'Setting Berhasil di Update');
+			}else{
+				
+				$this->layout = View::make('sb_admin.master')->with('config',$config);
+				$this->layout->content = View::make('sb_admin.setting')->with('data',$data)->with('config',$config)->with('config_blog',$config_blog);
+			}
+	
 	}
+	
+	
 	/*
 	 public function catCourses($cat_item){
 		$limit = Config::get('blog.list_item');
@@ -428,7 +471,7 @@ public  function editComment()
 		    $q->where('slug', $cat_item );		
 			})->where('type','courses')->where('flag','publish')->get();
 		
-		$config = Config::get('blog');
+		$config = Config::get('admin');
 		$cat = Cat_item::where('slug',$cat_item)->first();
 		$cat_all = Cat_item::where('type',"courses")->get();
         Theme::init('default');  
