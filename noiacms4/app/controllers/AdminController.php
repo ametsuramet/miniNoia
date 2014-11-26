@@ -379,7 +379,7 @@ public  function editComment()
 	
 	public function login()
 	{
-		$config = Config::get('admin');
+		$config = Config::get('blog');
                 Theme::init('default');  
 				$this->layout = View::make('sb_admin.master')->with('config',$config);
 		$this->layout->content = View::make('sb_admin.login')->with('config',$config);
