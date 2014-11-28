@@ -20,6 +20,9 @@ Route::group(array('before' => 'auth'), function()
 	Route::post('addPost',array('uses'=>'AdminController@addPost'));
 	Route::get('addPage',array('uses'=>'AdminController@addPage'));
 	Route::post('addPage',array('uses'=>'AdminController@addPageProses'));
+	Route::get('addProduct',array('uses'=>'AdminController@addProduct'));
+	Route::post('addProduct',array('uses'=>'AdminController@addProductProses'));
+	Route::get('listProduct',array('uses'=>'AdminController@listProduct'));
 	Route::get('listCategory',array('uses'=>'AdminController@listCategory'));
 	Route::get('addCategory',array('uses'=>'AdminController@addCategory'));
 	Route::post('upload',array('uses'=>'AdminController@upload'));
@@ -30,6 +33,10 @@ Route::group(array('before' => 'auth'), function()
 	Route::get('comment',array('uses'=>'AdminController@comment'));
 	Route::get('setting',array('uses'=>'AdminController@setting'));
 	Route::post('saveSetting',array('uses'=>'AdminController@setting'));
+	Route::get('menuPick',array('uses'=>'AdminController@menuPick'));
+	Route::get('module',array('uses'=>'AdminController@listModule'));
+	Route::get('addModule',array('uses'=>'AdminController@addModule'));
+	Route::post('addModule',array('uses'=>'AdminController@addModuleProses'));
 	Route::get('logout', array( function()
 	{
 		Auth::logout();
@@ -44,9 +51,13 @@ Route::get('/',array('uses'=>'HomeController@index'));
 Route::get('/post/{id}',array('uses'=>'HomeController@show'));
 Route::get('/listCourses',array('uses'=>'HomeController@listCourses'));
 Route::get('category/{cat_item}',array('uses'=>'HomeController@category'));
+Route::get('product_cat/{cat_item}',array('uses'=>'HomeController@product_category'));
+Route::get('product/{cat_item}/{post}',array('uses'=>'HomeController@product'));
 //Route::get('catCourses/{cat_item}',array('uses'=>'HomeController@catCourses'));
 Route::get('article/{cat_item}/{post}',array('uses'=>'HomeController@article'));
+Route::get('search_ajax',array('uses'=>'HomeController@search_ajax'));
 Route::get('page/{page}',array('uses'=>'HomeController@page'));
+
 
 Route::post('addComment',array('uses'=>'HomeController@addComment'));
 Route::filter('auth', function()

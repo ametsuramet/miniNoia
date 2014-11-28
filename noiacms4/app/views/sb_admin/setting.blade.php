@@ -95,32 +95,7 @@ margin-bottom:10px;
 					{{Form::checkbox('comment', 'true', $config_blog['comment'], array())}}
 				</div>
 			</div>
-			<div class="row form-setting">
-				 <div class="col-md-2">
-					{{Form::label('','Menu')}}
-				</div>
-				<div class="col-md-2">
-					<i class="fa fa-plus  add_menu" style="cursor:pointer;font-size:1.2em;color:#f00"></i>
-				</div>
-			</div>
-				<span class="setting_menu">
-				@foreach($config_blog['menu'] as $name=>$menu)
-				<div class="row form-setting"> 
-					<div class="col-md-2">
-					</div>
-					<div class="col-md-4">
-						{{Form::text('menu[name][]',$name, array('class' => 'form-control'))}}						
-					</div>
-					<div class="col-md-4">
-						{{Form::text('menu[link][]',$menu, array('class' => 'form-control'))}}						
-					</div>
-					<div class="col-md-2">
-						<i class="fa fa-times  del_menu" style="cursor:pointer;font-size:1.2em;color:#f00"></i>
-					</div>
-				</div>
-				@endforeach
-				</span>
-		
+			
 			<div class="row form-setting">
 				 <div class="col-md-2">
 					{{Form::label('','Twitter')}}
@@ -145,6 +120,74 @@ margin-bottom:10px;
 					{{Form::text('google+',$config_blog['google+'], array('class' => 'form-control'))}}			
 				</div>
 			</div>
+			<div class="row form-setting">
+				 <div class="col-md-2">
+					{{Form::label('','Theme')}}
+				</div>
+				<div class="col-md-4">
+					{{Form::select('theme', $themes, $config_blog['theme'] , array('class' => 'form-control '))}}			    	
+				    
+					
+				</div>
+			</div>
+			<hr>
+			<div class="row form-setting">
+				 <div class="col-md-2">
+					{{Form::label('','Menu')}}
+				</div>
+				<div class="col-md-2">
+					<i class="fa fa-plus  add_menu" style="cursor:pointer;font-size:1.2em;color:#f00"></i>
+				</div>
+			</div>
+				<span class="setting_menu">
+				@foreach($config_blog['menu'] as $name=>$menu)
+				<div class="row form-setting"> 
+					<div class="col-md-2">
+					</div>
+					<div class="col-md-4">
+						{{Form::text('menu[name][]',$name, array('class' => 'form-control'))}}						
+					</div>
+					<div class="col-md-4">
+						{{Form::text('menu[link][]',$menu, array('class' => 'form-control menu_link'))}}						
+					</div>
+					<div class="col-md-2">
+						<i class="fa fa-times  del_menu" style="cursor:pointer;font-size:1.2em;color:#f00"></i>
+					</div>
+				</div>
+				@endforeach
+				</span>
+			
+			@foreach($config_blog['menu'] as $name=>$menu)
+			<div class="row form-setting">
+				 <div class="col-md-2">
+					{{Form::label('','Child Menu : '.$name)}}
+				</div>
+				<div class="col-md-2">
+					<i class="fa fa-plus  add_menu_child1" data-name="{{$name}}" style="cursor:pointer;font-size:1.2em;color:#f00"></i>
+				</div>
+			</div>
+				<span class="setting_menu_child1">
+				@if(isset($config_blog['menu_child1'][$name]))
+					@foreach($config_blog['menu_child1'][$name] as $name1=>$menu)
+					<div class="row form-setting"> 
+						<div class="col-md-2">
+						</div>
+						<div class="col-md-4">
+							{{Form::text('menu_child1['.$name.'][name][]',$name1, array('class' => 'form-control'))}}						
+						</div>
+						<div class="col-md-4">
+							{{Form::text('menu_child1['.$name.'][link][]',$menu, array('class' => 'form-control menu_link'))}}						
+						</div>
+						<div class="col-md-2">
+							<i class="fa fa-times  del_menu" style="cursor:pointer;font-size:1.2em;color:#f00"></i>
+						</div>
+					</div>
+					@endforeach
+				@else
+					
+				@endif
+				</span>
+			@endforeach
 			<div class="row form-setting">
 				<div class="form-group">
 				    	{{Form::submit('Submit!', array('class' => 'btn submit'))}}	    

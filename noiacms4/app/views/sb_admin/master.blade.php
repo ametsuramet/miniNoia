@@ -22,7 +22,8 @@
 	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/codemirror.min.css" />
 	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/3.20.0/theme/monokai.min.css" />
 	{{HTML::style('http://cdnjs.cloudflare.com/ajax/libs/summernote/0.5.2/summernote.css');}}
-   
+   	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -98,7 +99,9 @@ font-style: italic;
                         <li>
                             <a class="active" href="{{URL::to('/admin')}}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
+                     
                         @foreach($config['menu_admin'] as $name=>$menu)
+                        
 						 <li><a href="{{URL::to('/')}}{{$menu[0]}}">{{$menu[1]}}</i> {{$name}} </a>
 						 @if(isset($menu[2]))
 						 <ul class="nav nav-second-level">
@@ -108,7 +111,14 @@ font-style: italic;
 						</ul>
 						@endif
 						 </li>
-						@endforeach
+						 @endforeach
+						  <li><a href="#"><i class="fa fa-gears "></i> Module</a>						
+						 	<ul class="nav nav-second-level">
+								@foreach($config['module_type'] as $name=>$menu)
+									<li><a href="{{URL::to('/module?type='.$menu)}}"><i class="fa  fa-angle-right"></i> {{ucfirst($menu)}}</a></li>
+							 	@endforeach
+							</ul>
+						 </li> 
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -125,6 +135,9 @@ font-style: italic;
 	{{HTML::script(URL::asset('js/jquery.js'));}}
 	{{HTML::script(URL::asset('js/bootstrap.min.js'));}}
 	{{HTML::script(URL::asset('js/plugins/metisMenu/metisMenu.min.js'));}}
+	
+ 	 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
 	<!--{{HTML::script(URL::asset('js/plugins/morris/raphael.min.js'));}}
 	{{HTML::script(URL::asset('js/plugins/morris/morris.min.js'));}}
 	{{HTML::script(URL::asset('js/plugins/morris/morris-data.js'));}}-->

@@ -25,10 +25,32 @@ class HomeController extends BaseController {
 		$data = $data->where('flag','publish')->orderBy('id','desc')->take($limit)->skip($offset)->get();
 		//print_r( DB::getQueryLog());
 		
+		$conf_module = Config::get('module');
+		foreach($conf_module['home'] as $index=>$mod){
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish','id','desc');
+			//print_r($index);
+		}
+		
+		$add_module = Config::get('admin.module_type');
+		foreach($add_module as $index=>$m){
+			//echo $m;
+			$add_modules[$m] = Post::with('cat_item')->where('type',$m)->where('flag','publish')->get();
+			//print_r($index);
+			//print_r( DB::getQueryLog());
+		}
+
+		
+		$offset = 0;		
+		$product = Post::with('cat_item')->where('type','product')->where('flag','publish')
+		->take($limit)->skip($offset)->orderBy('id','desc')->get();
+			
+			
+		//print_r($add_modules);
 		$config = Config::get('blog');
-		Theme::init('default');  
-		$this->layout = View::make('master')->with('config',$config);
-		$this->layout->content = View::make('home')->with('data',$data)->with('config',$config);
+		Theme::init(Config::get('blog.theme'));  
+		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
+		$this->layout->content = View::make('home')->with('data',$data)->with('config',$config)
+		->with('module',$module)->with('add_module',$add_modules)->with('product',$product);
 		
 		
 	}
@@ -55,7 +77,7 @@ class HomeController extends BaseController {
 		//print_r( DB::getQueryLog());
 		$cat_all = Cat_item::where('type',"courses")->get();
 		$config = Config::get('blog');
-		Theme::init('default');  
+		Theme::init(Config::get('blog.theme'));  
 		$this->layout = View::make('master')->with('config',$config);
 		$this->layout->content = View::make('listCourses')->with('data',$data)->with('config',$config)->with('cat_all',$cat_all);
 		
@@ -63,6 +85,7 @@ class HomeController extends BaseController {
 	}
 	public function category($cat_item){
 		$limit = Config::get('blog.list_item');
+		
 		$offset = 0;
 		if(isset($_GET['limit'])){
 			$offset = $_GET['limit'];
@@ -74,29 +97,73 @@ class HomeController extends BaseController {
 		
 		$data = Post::with('cat_item')->whereHas('cat_item', function($q) use ($cat_item){
 		    $q->where('slug', $cat_item );		
-			})->where('type','post')->where('flag','publish')->orderBy('id','desc')->get();
+			})->where('type','post')->where('flag','publish')->take($limit)->skip($offset)->orderBy('id','desc')->get();
+		
+		$conf_module = Config::get('module');
+		foreach($conf_module['post'] as $index=>$mod){
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
+			
+		}
 		
 		$config = Config::get('blog');
 		$cat = Cat_item::where('slug',$cat_item)->first();
-        Theme::init('default');    
-		$this->layout = View::make('master')->with('config',$config);
-		$this->layout->content = View::make('category')->with('data',$data)->with('config',$config)->with('category',$cat);
+        Theme::init(Config::get('blog.theme'));    
+		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
+		$this->layout->content = View::make('category')->with('data',$data)->with('config',$config)->with('category',$cat)->with('module',$module);
 	
 	}
 	
-	
-	
-/*	public function  show($id)
-	{
-
-		$data = Post::with('cat_item')->where('type','post')->where('flag','publish')->find($id);
+	public function product_category($cat_item){
+		$limit = Config::get('blog.list_item');		
+		$offset = 0;
+		if(isset($_GET['limit'])){
+			$offset = $_GET['limit'];
+		}
+		
+		if(isset($_GET['page'])){
+			$offset = $limit * ($_GET['page']-1);
+		}
+		
+		$data = Post::with('cat_item')->whereHas('cat_item', function($q) use ($cat_item){
+		    $q->where('slug', $cat_item );		
+			})->where('type','product')->where('flag','publish')->take($limit)->skip($offset)->orderBy('id','desc')->get();
+		
+		$conf_module = Config::get('module');
+		foreach($conf_module['category_product'] as $index=>$mod){
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
+			
+		}
 		
 		$config = Config::get('blog');
-		$comment = Post::where('type','post')->where('flag','publish')->find($data->id);
-		 Theme::init('default');  
-		$this->layout = View::make('master')->with('config',$config);
-		$this->layout->content = View::make('post')->with('data',$data)->with('config',$config)->with('comment',$comment);
-	}*/
+		$cat = Cat_item::where('slug',$cat_item)->first();
+        Theme::init(Config::get('blog.theme'));    
+		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
+		$this->layout->content = View::make('product_category')->with('data',$data)->with('config',$config)->with('category',$cat)->with('module',$module);
+	
+	}
+	public function product($cat_item,$post){
+		$type = "product";
+		if(isset($_GET['type'])) $type = $_GET['type'];
+		$data = Post::with('cat_item')->where('slug',$post)->whereHas('cat_item', function($q) use ($cat_item){
+		    $q->where('slug', $cat_item );		
+			})->where('type',$type)->first();
+		$data->increment('hit', 1);
+		//print_r($data);
+		$config = Config::get('blog');
+		$comment = Post::where('type','comment')->where('flag','publish')->where('category',$data->id)->get();
+		// /print_r( DB::getQueryLog());
+		
+		$conf_module = Config::get('module');
+		foreach($conf_module['product'] as $index=>$mod){
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
+			
+		}
+		//print_r($module['random_product']);
+		Theme::init(Config::get('blog.theme'));  
+		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
+		$this->layout->content = View::make('product')->with('post',$data)->with('config',$config)->with('module',$module)->with('comment',$comment);
+	}
+	
 	public function article($cat_item,$post){
 		$type = "post";
 		if(isset($_GET['type'])) $type = $_GET['type'];
@@ -108,9 +175,16 @@ class HomeController extends BaseController {
 		$config = Config::get('blog');
 		$comment = Post::where('type','comment')->where('flag','publish')->where('category',$data->id)->get();
 		// /print_r( DB::getQueryLog());
-		Theme::init('default');  
-		$this->layout = View::make('master')->with('config',$config);
-		$this->layout->content = View::make('post')->with('post',$data)->with('config',$config)->with('comment',$comment);
+		
+		$conf_module = Config::get('module');
+		foreach($conf_module['post'] as $index=>$mod){
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
+			
+		}
+		//print_r($module['random_product']);
+		Theme::init(Config::get('blog.theme'));  
+		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
+		$this->layout->content = View::make('post')->with('post',$data)->with('config',$config)->with('module',$module)->with('comment',$comment);
 	}
 	
 	public function page($post){
@@ -118,9 +192,14 @@ class HomeController extends BaseController {
 		$data = Post::where('slug',$post)->where('type','page')->first();
 		$comment = array();
 		$config = Config::get('blog');
-		Theme::init('default');  
-		$this->layout = View::make('master')->with('config',$config);
-		$this->layout->content = View::make('post')->with('post',$data)->with('config',$config)->with('comment',$comment);
+		$conf_module = Config::get('module');
+		foreach($conf_module['page'] as $index=>$mod){
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
+			
+		}
+		Theme::init(Config::get('blog.theme'));  
+		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
+		$this->layout->content = View::make('post')->with('post',$data)->with('config',$config)->with('comment',$comment)->with('module',$module);
 	}
 	
 	
@@ -159,14 +238,119 @@ public  function addComment()
 		$data->save();
 		//print_r($post);
 		$type = "";
-		if(Input::get('type')=="courses"){
+		if(Input::get('type')=="product"){
+			return Redirect::to('/product/'.$post->cat_item->slug.'/'.$post->slug)->with('flash_notice', "Komentar Berhasil ditambahkan dan akan ditampilkan setelah dimoderasi terlebih dahulu");
+			
+		}elseif(Input::get('type')=="courses"){
 			$type = "?type=courses";
-		}
 		return Redirect::to('/article/'.$post->cat_item->slug.'/'.$post->slug.$type)->with('flash_notice', "Komentar Berhasil ditambahkan dan akan ditampilkan setelah dimoderasi terlebih dahulu");
-		
+		}
 		
 	}
 	
+	public function module($name,$type,$limit=null,$offset=null,$publish="publish",$by="id",$order="desc"){
+		$data = array();
+		switch ($name) {
+			case 'post':
+			case 'product':			
+				$data = Post::with('cat_item')->where('type',$type)->where('flag',$publish)->orderBy($by, $order);
+				if($limit)
+				$data = $data->take($limit);
+				if($offset)
+				$data = $data->skip($offset);
+				$data = $data->get();
+				break;
+			case 'popular_product':			
+				$data = Post::with('cat_item')->where('type',$type)->where('flag',$publish)->orderBy("hit", "desc");
+				if($limit)
+				$data = $data->take($limit);
+				if($offset)
+				$data = $data->skip($offset);
+				$data = $data->get();
+				
+				break;	
+			case 'random_product':			
+				
+				$data = Post::with('cat_item')->where('type',$type)->orderByRaw('rand()')->where('flag',$publish);
+				if($limit)
+				$data = $data->take($limit);
+				if($offset)
+				$data = $data->skip($offset);
+				$data = $data->get();				
+				break;	
+			case 'category_product':			
+				
+				$data = Cat_item::where('type',$type);
+				
+				$data = $data->get();				
+				break;				
+				default:
+				$data = array();
+				break;
+		}
+		//return DB::getQueryLog();
+		return $data;
+		
+	}
+
+	public function search_ajax(){
+		$data = array();
+		$q=$_GET['term'];
+		
+		
+		$posts = Post::with('cat_item')->where('type','post')->where('title','like','%'.$q.'%')->get();
+		$pages = Post::where('type','page')->where('title','like','%'.$q.'%')->get();
+		$categories = Cat_item::where('type','post')->where('name','like','%'.$q.'%')->get();
+		$prod_cats = Cat_item::where('type','product')->where('name','like','%'.$q.'%')->get();	
+		$products = Post::with('cat_item')->where('type','product')->where('title','like','%'.$q.'%')->get();	
+		//print_r( DB::getQueryLog());
+		foreach($posts as $post){
+			$cat = $post->cat_item->slug;			
+			$img = "";
+			$isi = "";
+			$harga = "";
+			$data[]  = array('cat'=>$cat,'img'=>$img,'isi'=>$isi,'harga'=>$harga,'id' => $post->id ,'label'=>''.$post->title,'value'=>'article/'.$post->cat_item->slug.'/'.$post->slug);
+			// /echo $data->id;
+		}	
+		foreach($products as $product){
+			$product_option = json_decode($product->option,true);
+			if($product_option['img'][1]!=""){
+				$img="<div class='search_thumb'><img  src='".URL::to('/img/product/')."/".$product_option['img'][1]."' /> </div>";
+			}
+			$harga ='IDR '.	number_format( $product_option['price'],0,",",".");
+			$cat = $product->cat_item->slug;
+		
+			$isi = "";
+		
+			$data[]  = array('cat'=>$cat,'img'=>$img,'isi'=>$isi,'harga'=>$harga,'id' => $product->id ,'label'=>''.$product->title,'value'=>'product/'.$product->cat_item->slug.'/'.$product->slug);
+			// /echo $data->id;
+		}	
+		foreach($pages as $page){
+			$cat = "";
+			$img = "";
+			$isi = "";
+			$harga = "";
+			$data[]  = array('cat'=>$cat,'img'=>$img,'isi'=>$isi,'harga'=>$harga,'id' => $page->id ,'label'=>''.$page->title,'value'=>'page/'.$page->slug);
+			// /echo $data->id;
+		}		
+		foreach($categories as $category){
+			$cat = "";
+			$img = "";
+			$isi = "";
+			$harga = "";
+			$data[]  = array('cat'=>$cat,'img'=>$img,'isi'=>$isi,'harga'=>$harga,'id' => $category->id ,'label'=>''.$category->name,'value'=>'category/'.$category->slug);
+			// /echo $data->id;
+		}
+		foreach($prod_cats as $prod_cat){
+			$cat = "";
+			$img = "";
+			$isi = "";
+			$harga = "";
+			$data[]  = array('cat'=>$cat,'img'=>$img,'isi'=>$isi,'harga'=>$harga,'id' => $prod_cat->id ,'label'=>''.$prod_cat->name,'value'=>'product_cat/'.$prod_cat->slug);
+			// /echo $data->id;
+		}
+		echo json_encode($data);
+	}
 	
 
 }

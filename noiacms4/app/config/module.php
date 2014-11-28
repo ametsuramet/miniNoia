@@ -1,0 +1,63 @@
+<?php 
+	return array( 
+	
+	"home"=>array(
+		"product"=>array(
+			"type"=>"product",
+			"limit"=>4,
+			"offset"=>null,
+			),
+		"post"=>array(
+			"type"=>"post",
+			"limit"=>4,
+			"offset"=>null,
+			),
+		),	
+	"post"=>array(		
+		"post"=>array(
+			"type"=>"post",
+			"limit"=>4,
+			"offset"=>null,
+			),
+		),
+	"page"=>array(		
+		"post"=>array(
+			"type"=>"post",
+			"limit"=>4,
+			"offset"=>null,
+			),
+		),
+	"product"=>array(
+		
+		"post"=>array(
+			"type"=>"post",
+			"limit"=>4,
+			"offset"=>null,
+			),
+		),
+	"category"=>array(
+		
+		"post"=>array(
+			"type"=>"post",
+			"limit"=>4,
+			"offset"=>null,
+			),
+		),
+	"category_product"=>array(
+		"popular_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
+		"category_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
+		"post"=>array(
+			"type"=>"post",
+			"limit"=>4,
+			"offset"=>null,
+			),
+		),
+	);
