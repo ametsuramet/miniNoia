@@ -54,10 +54,10 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => '192.168.1.7',
-			'database'  => 'neckflesh',
+			'host'      => 'localhost',
+			'database'  => 'database',
 			'username'  => 'amet',
-			'password'  => 'balakutak666',
+			'password'  => 'password',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
