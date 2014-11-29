@@ -15,4 +15,4 @@
 	"theme"=>"default",
 	"menu"=>array("About"=>"page/about-amet","Blog"=>"category/blog",),
 	"menu_child1"=>array()
-	);
+	); 

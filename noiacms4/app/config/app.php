@@ -124,6 +124,9 @@ return array(
 		'Cocur\Slugify\Bridge\Laravel\SlugifyServiceProvider',
 		'Bigecko\LaravelTheme\LaravelThemeServiceProvider',
 		'Roumen\Feed\FeedServiceProvider',
+		 'Alexpechkarev\GoogleGeocoder\GoogleGeocoderServiceProvider',
+		 'Greggilbert\Recaptcha\RecaptchaServiceProvider',
+		 'Wicochandra\Captcha\CaptchaServiceProvider'
 	),
 
 	/*
@@ -193,6 +196,7 @@ return array(
 		'Slugify' 		  => 'Cocur\Slugify\Bridge\Laravel\SlugifyFacade',
 		'Theme' => 'Bigecko\LaravelTheme\Facade',
 		'Feed' => 'Roumen\Feed\Facades\Feed',
+		 'Captcha'         => 'Wicochandra\Captcha\Facade\Captcha',
 	),
 
 );

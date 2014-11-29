@@ -1,0 +1,259 @@
+*{
+	border-radius:0 !important;
+}
+body{
+	font-family: Lora,'Times New Roman',serif;
+	
+	color:#fff;
+	background:#000 url('/img/bg_cloud.png') no-repeat top center;
+	background-attachment: fixed;
+}
+hr{
+	border-width:1px;
+	border-color:#111;
+}
+.collapse.navbar-collapse.navbar-ex1-collapse{
+background: #000;
+}
+.collapse.navbar-collapse.navbar-ex1-collapse li>a{
+text-transform:uppercase
+}
+a{
+	color:#BE0000
+}
+a:hover{
+	text-decoration:none;
+	color:#333;
+}
+.prod_img3{
+	width:200px;
+	height:200px;
+	float:left;
+	margin-right:20px;
+	overflow: hidden;
+	
+}
+.prod_img3 img{
+	width:100%;
+	-webkit-transition: all .5s ease-in;
+    -moz-transition: all .5s ease-in;
+    -o-transition: all .5s ease-in;
+    -ms-transition: all .5s ease-in;
+    cursor:pointer;
+	opacity:0.5
+}
+.prod_img3 img:hover{
+	-webkit-transform: scale(1.1); 
+    -moz-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    transform: scale(1.1);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    opacity:1
+}
+#logo{
+	margin: 60px auto;
+	text-align: center;
+	opacity: 0.6;
+	cursor: pointer
+}
+#logo:hover{
+		opacity:1
+}
+.search_thumb{
+	width:60px;
+	height:60px;
+	float:left;
+	margin-right:10px;
+	overflow: hidden;
+}
+.search_thumb img{
+	width:100%;
+}
+.etalage{
+	border-radius:0;
+	background:inherit;
+	border:none;
+}
+.etalage .panel-body
+{
+	height:500px;
+	padding:0;
+	overflow:hidden;
+}
+.etalage .panel-footer{
+	background:#111;
+	border-top:none;
+	text-align:center;
+	font-weight:700;
+	font-size:2em
+}
+.module_title{
+	text-align:center;
+	font-weight: 700;
+	color:#BE0000;
+	
+}
+.post_title{
+	
+	font-weight: 700;
+	color:#BE0000;
+	font-size:3em;
+}
+#flash_notice{
+	background: #ff0;
+	color: #000;
+	padding: 20px;
+	font-size: 1.2em;
+	cursor:pointer;
+}
+.prod_price2{
+	font-size:2em;
+}
+.comment{
+	padding:10px;
+	background: rgba(255,255,255,0.1);
+	margin-bottom:20px;
+}
+.module_title2{
+	font-weight: 700;
+	color:#fff;
+	
+}
+.links{
+	list-style-type: none;
+	padding-left:0px;
+}
+.links ul{
+	list-style-type: none;
+	padding-left:10px;
+}
+.links li{
+	line-height:1em;
+}
+
+.links li>a{
+	color:#BE0000;
+	font-family:"Open Sans";
+	font-size:.8em;
+	
+}
+#search_input{
+	width:0;
+	padding:0;
+	border:none;
+	margin-top: 10px;
+}
+.credit{
+	
+}
+footer{
+	padding-top:20px;
+	min-height:150px;
+	background: #0a0a0a;
+	
+	margin-top:40px;
+}
+.prod_cat{
+	color:#BE0000;
+}
+.prod_title{
+	margin-bottom:0;
+	
+	
+}
+.prod_img
+{
+	max-height: 300px;
+	padding:0;
+	overflow:hidden;
+}
+
+
+.etalage .panel-body img,
+.prod_img img
+{
+	width:100%;
+	-webkit-transition: all .5s ease-in;
+    -moz-transition: all .5s ease-in;
+    -o-transition: all .5s ease-in;
+    -ms-transition: all .5s ease-in;
+    cursor:pointer;
+	opacity:0.5
+}
+
+.etalage .panel-body img:hover
+{
+	-webkit-transform: scale(1.1); 
+    -moz-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    transform: scale(1.1);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    opacity:1
+}
+.prod_img2{
+	height: 100px;
+	width: 100px;
+	padding:0;
+	float:left;
+	margin-right:20px;
+	overflow:hidden;
+}
+.prod_img2 img{
+	width:100%;
+	-webkit-transition: all .5s ease-in;
+    -moz-transition: all .5s ease-in;
+    -o-transition: all .5s ease-in;
+    -ms-transition: all .5s ease-in;
+    cursor:pointer;
+	opacity:0.5
+}
+.prod_img2 img:hover{
+	-webkit-transform: scale(1.1); 
+    -moz-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    transform: scale(1.1);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    opacity:1
+}
+.module_list{
+	margin-bottom:20px;
+	position:relative;
+}
+.prod_thumb1,
+.prod_thumb_small{
+	overflow:hidden
+}
+
+.prod_img img:hover
+{
+	-webkit-transform: scale(1.1); 
+    -moz-transform: scale(1.1);
+    -o-transform: scale(1.1);
+    transform: scale(1.1);
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+    opacity:1
+}
+.prod_spec{
+	padding: 10px;
+background: rgba(0,0,0,0.8);
+margin-top: 20px;
+	
+}
+.dropdown-menu{
+	background:#111;
+	color:#fff;
+}
+.dropdown-menu li>a:hover{
+	background:#000;
+	color:#eee;
+}
+  @media (min-width: 768px) {
+        .navbar .navbar-nav {
+            display: inline-block;
+            float: none;
+        }
+        
+        .navbar .navbar-collapse {
+            text-align: center;
+        }
+    }

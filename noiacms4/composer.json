@@ -7,7 +7,10 @@
 		"laravel/framework": "4.2.*",
 		"cocur/slugify": "@stable",
 		"bigecko/laravel-theme": "dev-master",
-		"roumen/feed": "dev-master"
+		"roumen/feed": "dev-master",
+		"alexpechkarev/google-geocoder": "dev-master",
+		"greggilbert/recaptcha": "dev-master",
+		"wicochandra/captcha": "1.*"
 	},
 	"autoload": {
 		"classmap": [

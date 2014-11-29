@@ -57,9 +57,11 @@ Route::get('product/{cat_item}/{post}',array('uses'=>'HomeController@product'));
 Route::get('article/{cat_item}/{post}',array('uses'=>'HomeController@article'));
 Route::get('search_ajax',array('uses'=>'HomeController@search_ajax'));
 Route::get('page/{page}',array('uses'=>'HomeController@page'));
+Route::get('show_module/{type}/{slug}',array('uses'=>'HomeController@show_module'));
 
 
 Route::post('addComment',array('uses'=>'HomeController@addComment'));
+Route::post('sendContact',array('uses'=>'HomeController@sendContact'));
 Route::filter('auth', function()
 {
 	if (Auth::guest()) return Redirect::to('/')->with('flash_notice', 'You Must LOG IN First.');	

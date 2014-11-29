@@ -40,8 +40,12 @@
 					{{Form::text('slug', $data['post_edit']->slug , array('class' => 'form-control'))}}			    	
 			    </div>
               	<div class="form-group">
+              		<?php $id="summernote"?>
+              		@if($_GET['type']=="html")
+              		<?php $id=$_GET['type']?>
+              		@endif
 			    	{{Form::label('id', 'Description')}}
-					{{Form::textarea('desc', htmlspecialchars($data['post_edit']->description) , array('class' => 'form-control','id'=>'summernote','rows'=>25))}}		    	
+					{{Form::textarea('desc', htmlspecialchars($data['post_edit']->description) , array('class' => 'form-control','id'=>$id,'rows'=>25))}}		    	
 			    </div>
 			  
 			    

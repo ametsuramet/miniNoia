@@ -13,14 +13,34 @@
 			"offset"=>null,
 			),
 		),	
-	"post"=>array(		
+	"post"=>array(
+		"popular_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
+		"random_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
 		"post"=>array(
 			"type"=>"post",
 			"limit"=>4,
 			"offset"=>null,
 			),
 		),
-	"page"=>array(		
+	"page"=>array(
+		"popular_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
+		"random_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
 		"post"=>array(
 			"type"=>"post",
 			"limit"=>4,
@@ -28,7 +48,16 @@
 			),
 		),
 	"product"=>array(
-		
+		"popular_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
+		"random_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
 		"post"=>array(
 			"type"=>"post",
 			"limit"=>4,
@@ -36,7 +65,16 @@
 			),
 		),
 	"category"=>array(
-		
+		"popular_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
+		"category_product"=>array(
+			"type"=>"product",
+			"limit"=>5,
+			"offset"=>null,
+			),
 		"post"=>array(
 			"type"=>"post",
 			"limit"=>4,

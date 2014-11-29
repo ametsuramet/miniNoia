@@ -6,6 +6,7 @@ class HomeController extends BaseController {
 
 	public function index(){
 		
+		$param = array("address"=>"cigondewah rahayu bandung");
 		
 		$data =array();		
 		$limit = Config::get('blog.list_item');
@@ -44,17 +45,27 @@ class HomeController extends BaseController {
 		$product = Post::with('cat_item')->where('type','product')->where('flag','publish')
 		->take($limit)->skip($offset)->orderBy('id','desc')->get();
 			
-			
+		$contact = Config::get('admin.contact');	
 		//print_r($add_modules);
 		$config = Config::get('blog');
+		
+		$param = array("address"=>"jalan cigondewah 133 Bandung");
+		
+		
 		Theme::init(Config::get('blog.theme'));  
 		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
 		$this->layout->content = View::make('home')->with('data',$data)->with('config',$config)
-		->with('module',$module)->with('add_module',$add_modules)->with('product',$product);
+		->with('module',$module)->with('add_module',$add_modules)->with('product',$product)->with('contact',$contact);
 		
 		
 	}
 	
+	public function show_module($type,$slug){
+		$data = Post::with('cat_item')->where('type','html')->where('slug',$slug)->first();
+		//print_r( DB::getQueryLog());
+		//print_r($data);
+		echo $data->description;
+	}
 	public function listCourses(){
 		
 		
@@ -296,7 +307,7 @@ public  function addComment()
 	public function search_ajax(){
 		$data = array();
 		$q=$_GET['term'];
-		
+	
 		
 		$posts = Post::with('cat_item')->where('type','post')->where('title','like','%'.$q.'%')->get();
 		$pages = Post::where('type','page')->where('title','like','%'.$q.'%')->get();
@@ -352,5 +363,68 @@ public  function addComment()
 		echo json_encode($data);
 	}
 	
+	public function sendContact(){
+		//NOTE : Please set EMAIL config at noiacms4/app/config/mail.php
+		$config = Config::get('blog');
+		$contact = Config::get('admin.contact');
+		$style = Config::get('admin.contact_style');
+		$contact_msg = Config::get('admin.contact_msg');
+		$contact_to = Config::get('admin.contact_to');
+		$send = null;
+		if(Input::get('captcha')==""){
+			return Redirect::back()->with('flash_notice', "Security Code Kosong");	
+		}
+		$rules = [
+            'name' => 'required|min:3|unique:users',
+            'phone' => 'required|numeric|digits_between:8,25',
+            'email' => 'required|email|unique:users',
+            'captcha' => 'captcha'
+           
+        ];
+
+        $input = Input::only(
+            'name',
+            'phone',
+            'email',
+            'captcha'
+           
+        );
+		
+        $validator = Validator::make($input, $rules);
+		
+		if($validator->fails())
+        {
+            return Redirect::back()->withInput()->withErrors($validator);
+            //print_r($validator);
+        }
+		
+		
+		$send .="<html><body ".$style['body'].">";		
+		$send .="<div ".$style['box'].">";		
+		$send .="<h3 ".$style['heading1']." >".$config['blog_name']."</h3>";		
+		$send .="<h4 ".$style['heading2']." >Contact Form Responder</h4>";		
+		$message = Input::all();
+		$i = 0;
+		foreach($message as $index=>$msg){
+			$send .= '<label '.$style['label'].'>'.$contact[$i][1] ." </label> <span ".$style['msg_cont']."> ". $msg .'</span><br>';
+		$i++;
+		}
+		$send .="</div>";	
+		$send .="<small ".$style['footer'].">&copy 2014 - <a href='http://ametw.hol.es'>amet suramet</a></small>";	
+		$send .="</body></html>";	
+		//echo $send;
+		Theme::init(Config::get('blog.theme'));  
+		//return View::make('email')->with('msg',$send);
+		$input = $_POST;
+		Mail::send('email', array('msg' => $send ), function($message) use ($config,$contact_to,$contact_msg,$input)
+		{
+		    $message->to($contact_to['send_email'],$contact_to['send_name'])->subject($config['blog_name']." Contact Form Responder");
+			$message->replyTo($input['email'],$input['name']);
+			//echo "aye";
+			
+		});	
+		
+		return Redirect::back()->with('flash_notice', $contact_msg['success']);	
+	}
 
 }
