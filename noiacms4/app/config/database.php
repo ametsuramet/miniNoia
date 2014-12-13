@@ -15,7 +15,7 @@ return array(
 
 	'fetch' => PDO::FETCH_CLASS,
 
-	/* 
+	/*
 	|--------------------------------------------------------------------------
 	| Default Database Connection Name
 	|--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'default' => 'sqlite',
+	'default' => 'mysql',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,10 +54,10 @@ return array(
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => 'localhost',
-			'database'  => 'database',
-			'username'  => 'amet',
-			'password'  => 'password',
+			'host'      => 'mysql.idhostinger.com',
+			'database'  => 'u384771601_para',
+			'username'  => 'u384771601_root',
+			'password'  => 'balakutak',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',

@@ -51,6 +51,7 @@ Route::get('/',array('uses'=>'HomeController@index'));
 Route::get('/post/{id}',array('uses'=>'HomeController@show'));
 Route::get('/listCourses',array('uses'=>'HomeController@listCourses'));
 Route::get('category/{cat_item}',array('uses'=>'HomeController@category'));
+Route::get('gallery/{cat_item}',array('uses'=>'HomeController@gallery'));
 Route::get('product_cat/{cat_item}',array('uses'=>'HomeController@product_category'));
 Route::get('product/{cat_item}/{post}',array('uses'=>'HomeController@product'));
 //Route::get('catCourses/{cat_item}',array('uses'=>'HomeController@catCourses'));

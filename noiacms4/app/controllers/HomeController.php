@@ -25,22 +25,17 @@ class HomeController extends BaseController {
 		}	 
 		$data = $data->where('flag','publish')->orderBy('id','desc')->take($limit)->skip($offset)->get();
 		//print_r( DB::getQueryLog());
-		
-		$conf_module = Config::get('module');
-		foreach($conf_module['home'] as $index=>$mod){
-			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish','id','desc');
-			//print_r($index);
-		}
-		
 		$add_module = Config::get('admin.module_type');
-		foreach($add_module as $index=>$m){
-			//echo $m;
-			$add_modules[$m] = Post::with('cat_item')->where('type',$m)->where('flag','publish')->get();
-			//print_r($index);
-			//print_r( DB::getQueryLog());
-		}
-
+		$conf_module = Config::get('module');		
 		
+		foreach($conf_module['home'] as $index=>$mod){	
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish','id','desc');			
+		}		
+		$html = Post::with('cat_item')->where('type','html')->where('flag','publish')->get();
+		foreach($html as $index=>$mod){	
+			$module['singleHTML'][$mod->slug] = $mod->description;		
+		}
+		//print_r($module);
 		$offset = 0;		
 		$product = Post::with('cat_item')->where('type','product')->where('flag','publish')
 		->take($limit)->skip($offset)->orderBy('id','desc')->get();
@@ -49,13 +44,10 @@ class HomeController extends BaseController {
 		//print_r($add_modules);
 		$config = Config::get('blog');
 		
-		$param = array("address"=>"jalan cigondewah 133 Bandung");
-		
-		
 		Theme::init(Config::get('blog.theme'));  
 		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
 		$this->layout->content = View::make('home')->with('data',$data)->with('config',$config)
-		->with('module',$module)->with('add_module',$add_modules)->with('product',$product)->with('contact',$contact);
+		->with('module',$module)->with('contact',$contact);
 		
 		
 	}
@@ -88,9 +80,19 @@ class HomeController extends BaseController {
 		//print_r( DB::getQueryLog());
 		$cat_all = Cat_item::where('type',"courses")->get();
 		$config = Config::get('blog');
+		$conf_module = Config::get('module');		
+		
+		foreach($conf_module['home'] as $index=>$mod){	
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish','id','desc');			
+		}		
+		$html = Post::with('cat_item')->where('type','html')->where('flag','publish')->get();
+		foreach($html as $index=>$mod){	
+			$module['singleHTML'][$mod->slug] = $mod->description;		
+		}
 		Theme::init(Config::get('blog.theme'));  
 		$this->layout = View::make('master')->with('config',$config);
-		$this->layout->content = View::make('listCourses')->with('data',$data)->with('config',$config)->with('cat_all',$cat_all);
+		$this->layout->content = View::make('listCourses')->with('data',$data)
+		->with('module',$module)->with('config',$config)->with('cat_all',$cat_all);
 		
 		
 	}
@@ -107,7 +109,9 @@ class HomeController extends BaseController {
 		}
 		
 		$data = Post::with('cat_item')->whereHas('cat_item', function($q) use ($cat_item){
-		    $q->where('slug', $cat_item );		
+				if($cat_item!="all"){
+			   		$q->where('slug', $cat_item );		
+			    }
 			})->where('type','post')->where('flag','publish')->take($limit)->skip($offset)->orderBy('id','desc')->get();
 		
 		$conf_module = Config::get('module');
@@ -115,15 +119,56 @@ class HomeController extends BaseController {
 			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
 			
 		}
-		
+		$html = Post::with('cat_item')->where('type','html')->where('flag','publish')->get();
+		foreach($html as $index=>$mod){	
+			$module['singleHTML'][$mod->slug] = $mod->description;		
+		}
 		$config = Config::get('blog');
 		$cat = Cat_item::where('slug',$cat_item)->first();
+		$all_cat = Cat_item::where('type','post')->get();
         Theme::init(Config::get('blog.theme'));    
 		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
-		$this->layout->content = View::make('category')->with('data',$data)->with('config',$config)->with('category',$cat)->with('module',$module);
+		$this->layout->content = View::make('category')->with('data',$data)->with('all_cat',$all_cat)
+		->with('config',$config)->with('category',$cat)->with('module',$module);
 	
 	}
+	public function gallery($cat_item){
+		$limit = Config::get('blog.list_item');
+		
+		$offset = 0;
+		if(isset($_GET['limit'])){
+			$offset = $_GET['limit'];
+		}
+		
+		if(isset($_GET['page'])){
+			$offset = $limit * ($_GET['page']-1);
+		}
+		
+		$data = Post::with('cat_item')->whereHas('cat_item', function($q) use ($cat_item){
+				if($cat_item!="all"){
+			   		$q->where('slug', $cat_item );		
+			    }
+			})->where('type','gallery')->where('flag','publish')->take($limit)->skip($offset)->orderBy('id','desc')->get();
+		
+		$conf_module = Config::get('module');
+		foreach($conf_module['post'] as $index=>$mod){
+			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
+			
+		}
+		$html = Post::with('cat_item')->where('type','html')->where('flag','publish')->get();
+		foreach($html as $index=>$mod){	
+			$module['singleHTML'][$mod->slug] = $mod->description;		
+		}
+		$config = Config::get('blog');
+		$cat = Cat_item::where('slug',$cat_item)->first();
+		$all_cat = Cat_item::where('type','gallery')->get();
+        Theme::init(Config::get('blog.theme'));    
+		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
+		$this->layout->content = View::make('gallery')->with('data',$data)->with('config',$config)
+		->with('category',$cat)->with('all_cat',$all_cat)->with('module',$module);
 	
+	}
+
 	public function product_category($cat_item){
 		$limit = Config::get('blog.list_item');		
 		$offset = 0;
@@ -136,7 +181,9 @@ class HomeController extends BaseController {
 		}
 		
 		$data = Post::with('cat_item')->whereHas('cat_item', function($q) use ($cat_item){
-		    $q->where('slug', $cat_item );		
+		    if($cat_item!="all"){
+			   		$q->where('slug', $cat_item );		
+			    }
 			})->where('type','product')->where('flag','publish')->take($limit)->skip($offset)->orderBy('id','desc')->get();
 		
 		$conf_module = Config::get('module');
@@ -144,12 +191,17 @@ class HomeController extends BaseController {
 			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
 			
 		}
-		
+		$html = Post::with('cat_item')->where('type','html')->where('flag','publish')->get();
+		foreach($html as $index=>$mod){	
+			$module['singleHTML'][$mod->slug] = $mod->description;		
+		}
 		$config = Config::get('blog');
 		$cat = Cat_item::where('slug',$cat_item)->first();
+		$all_cat = Cat_item::where('type','product')->get();
         Theme::init(Config::get('blog.theme'));    
 		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
-		$this->layout->content = View::make('product_category')->with('data',$data)->with('config',$config)->with('category',$cat)->with('module',$module);
+		$this->layout->content = View::make('product_category')
+		->with('data',$data)->with('config',$config)->with('all_cat',$all_cat)->with('category',$cat)->with('module',$module);
 	
 	}
 	public function product($cat_item,$post){
@@ -168,6 +220,10 @@ class HomeController extends BaseController {
 		foreach($conf_module['product'] as $index=>$mod){
 			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
 			
+		}
+		$html = Post::with('cat_item')->where('type','html')->where('flag','publish')->get();
+		foreach($html as $index=>$mod){	
+			$module['singleHTML'][$mod->slug] = $mod->description;		
 		}
 		//print_r($module['random_product']);
 		Theme::init(Config::get('blog.theme'));  
@@ -192,6 +248,10 @@ class HomeController extends BaseController {
 			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
 			
 		}
+		$html = Post::with('cat_item')->where('type','html')->where('flag','publish')->get();
+		foreach($html as $index=>$mod){	
+			$module['singleHTML'][$mod->slug] = $mod->description;		
+		}
 		//print_r($module['random_product']);
 		Theme::init(Config::get('blog.theme'));  
 		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
@@ -208,6 +268,10 @@ class HomeController extends BaseController {
 			$module[$index] = $this->module($index,$mod['type'],$mod['limit'],$mod['offset'],'publish');
 			
 		}
+		$html = Post::with('cat_item')->where('type','html')->where('flag','publish')->get();
+		foreach($html as $index=>$mod){	
+			$module['singleHTML'][$mod->slug] = $mod->description;		
+		}
 		Theme::init(Config::get('blog.theme'));  
 		$this->layout = View::make('master')->with('config',$config)->with('module',$module);
 		$this->layout->content = View::make('post')->with('post',$data)->with('config',$config)->with('comment',$comment)->with('module',$module);
@@ -217,6 +281,30 @@ class HomeController extends BaseController {
 public  function addComment()
 	{
 		
+		if(Input::get('captcha')==""){
+			return Redirect::back()->with('flash_notice', "Security Code Kosong");	
+		}
+		$rules = [
+            'commName' => 'required|min:3',         
+            'commEmail' => 'required|email',
+            'captcha' => 'captcha'
+           
+        ];
+
+        $input = Input::only(
+            'commName',            
+            'commEmail',
+            'captcha'
+           
+        );
+		
+        $validator = Validator::make($input, $rules);
+		
+		if($validator->fails())
+        {
+            return Redirect::back()->withInput()->withErrors($validator);
+            //print_r($validator);
+        }
 		
 		$post = Post::with('cat_item')->where('type',Input::get('type'))->where('id',Input::get('id'))->first();
 		
@@ -263,14 +351,18 @@ public  function addComment()
 		$data = array();
 		switch ($name) {
 			case 'post':
-			case 'product':			
+			case 'product':	
+			case 'gallery':					
+			case 'testimonial':					
+			case 'slider':			
+			case 'html':			
 				$data = Post::with('cat_item')->where('type',$type)->where('flag',$publish)->orderBy($by, $order);
 				if($limit)
 				$data = $data->take($limit);
 				if($offset)
 				$data = $data->skip($offset);
 				$data = $data->get();
-				break;
+				break;			
 			case 'popular_product':			
 				$data = Post::with('cat_item')->where('type',$type)->where('flag',$publish)->orderBy("hit", "desc");
 				if($limit)
@@ -375,9 +467,9 @@ public  function addComment()
 			return Redirect::back()->with('flash_notice', "Security Code Kosong");	
 		}
 		$rules = [
-            'name' => 'required|min:3|unique:users',
+            'name' => 'required|min:3',
             'phone' => 'required|numeric|digits_between:8,25',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email',
             'captcha' => 'captcha'
            
         ];
